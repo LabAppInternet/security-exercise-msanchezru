@@ -32,7 +32,7 @@ public class SecurityConfigurationAuthorization {
         this.jwtDecoder = jwtDecoder;
     }
 
-    //TODO add configuration so that
+    //DONE add configuration so that
     // 1. /moderator and all the endpoints beginning with /moderator are accessible only by users with the role "MODERATOR"
     // 2. /moderator/whatever/admin are accessible by users with the role "ADMIN" (and also "MODERATOR"). "Whatever" is a single path element that can be anything.
     //    For example, /moderator/aaa/admin, /moderator/bbb/admin, /moderator/ccc/admin, are all accessible by users with the role "ADMIN" (and also "MODERATOR")
@@ -53,6 +53,9 @@ public class SecurityConfigurationAuthorization {
                     auth.requestMatchers("/helloAdmin").access(hasScope("ADMIN"));
                     auth.requestMatchers("/helloUserAdmin").access(hasAnyScope("USER", "ADMIN"));
                     auth.anyRequest().authenticated();
+                    //DONE:
+                    auth.requestMatchers("/moderator/**").hasRole("MODERATOR");
+                    auth.requestMatchers("/moderator/*/admin").hasAnyRole("ADMIN", "MODERATOR");
                 })
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt((jwt) -> jwt.decoder(jwtDecoder)))
